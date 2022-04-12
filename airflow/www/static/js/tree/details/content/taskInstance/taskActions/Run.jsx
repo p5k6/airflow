@@ -35,7 +35,7 @@ const Run = ({
   dagId,
   runId,
   taskId,
-  selectedRows,
+  mapIndexes,
 }) => {
   const containerRef = useContainerRef();
   const [ignoreAllDeps, setIgnoreAllDeps] = useState(false);
@@ -50,22 +50,12 @@ const Run = ({
   const { mutate: onRun, isLoading } = useRunTask(dagId, runId, taskId);
 
   const onClick = () => {
-    if (selectedRows.length) {
-      selectedRows.forEach((mapIndex) => {
-        onRun({
-          ignoreAllDeps,
-          ignoreTaskState,
-          ignoreTaskDeps,
-          mapIndex,
-        });
-      });
-    } else {
-      onRun({
-        ignoreAllDeps,
-        ignoreTaskState,
-        ignoreTaskDeps,
-      });
-    }
+    onRun({
+      ignoreAllDeps,
+      ignoreTaskState,
+      ignoreTaskDeps,
+      mapIndexes,
+    });
   };
 
   return (
@@ -96,7 +86,7 @@ const Run = ({
       <Tooltip
         label="Only works with the Celery, CeleryKubernetes or Kubernetes executors"
         shouldWrapChildren // Will show the tooltip even if the button is disabled
-        disabled={canRun}
+        isDisabled={canRun}
         portalProps={{ containerRef }}
       >
         <Button colorScheme="blue" onClick={onClick} isLoading={isLoading} disabled={!canRun}>
