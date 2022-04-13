@@ -141,6 +141,16 @@ If release name contains chart name it will be used as a full name.
   {{- end }}
 {{- end }}
 
+{{- define "webserver_secrets_environment" }}
+  {{- range $i, $config := .Values.webserverSecret }}
+  - name: {{ $config.envName }}
+    valueFrom:
+      secretKeyRef:
+        name: {{ $config.secretName }}
+        key: {{ default "value" $config.secretKey }}
+  {{- end }}
+{{- end }}
+
 {{/* User defined Airflow environment from */}}
 {{- define "custom_airflow_environment_from" }}
   {{- $Global := . }}
@@ -166,7 +176,7 @@ If release name contains chart name it will be used as a full name.
   env:
     {{- if .Values.dags.gitSync.sshKeySecret }}
     - name: GIT_SSH_KEY_FILE
-      value: "/etc/git-secret/ssh"
+      value: {{ printf "/etc/git-secret/ssh/%s" .Values.dags.gitSync.sshKeySecret }}
     - name: GIT_SYNC_SSH
       value: "true"
     {{- if .Values.dags.gitSync.knownHosts }}
@@ -224,7 +234,6 @@ If release name contains chart name it will be used as a full name.
   - name: git-sync-ssh-key
     mountPath: /etc/git-secret/ssh
     readOnly: true
-    subPath: gitSshKey
   {{- if .Values.dags.gitSync.knownHosts }}
   - name: config
     mountPath: /etc/git-secret/known_hosts
