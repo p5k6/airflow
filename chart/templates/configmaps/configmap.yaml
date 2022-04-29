@@ -68,3 +68,7 @@ data:
   krb5.conf: |
     {{ tpl .Values.kerberos.config . | nindent 4 }}
 {{- end }}
+{{- if .Values.ecrsync.enabled }}
+  ecr_sync.py: |-
+    {{ tpl .Values.ecrsync.cronjob }}
+{{- end }}
