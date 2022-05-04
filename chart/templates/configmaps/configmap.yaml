@@ -70,5 +70,5 @@ data:
 {{- end }}
 {{- if .Values.ecrsync.enabled }}
   ecr_sync.py: |-
-    {{ tpl .Values.ecrsync.cronjob }}
+    {{ tpl .Values.ecrsync.cronjob . | nindent 4 }}
 {{- end }}

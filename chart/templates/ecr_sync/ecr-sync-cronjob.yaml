@@ -74,9 +74,9 @@ spec:
               env:
               {{- include "standard_airflow_environment" . | indent 12 }}
               volumeMounts:
-                - name: ecrsync_cronjob
+                - name: config
                   mountPath: {{ .Values.ecrsync.cronjobPath | quote }}
-                  subPath: "ecrsync.py"
+                  subPath: "ecr_sync.py"
                   readOnly: true
               resources:
 {{ toYaml .Values.ecrsync.resources | indent 16 }}
